@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS kind (
+ kind_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+ name VARCHAR(100) NOT NULL CHECK (TRIM(name) <> ''),
+ budget_cent INT DEFAULT 1500 NOT NULL CHECK (budget_cent = 1500),
+ restbudget_cent INT DEFAULT 1500 NOT NULL CHECK (restbudget_cent BETWEEN 0 AND budget_cent)
+);
+CREATE TABLE IF NOT EXISTS artikel (
+ artikel_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+ name VARCHAR(100) NOT NULL CHECK (TRIM(name) <> ''),
+ preis_cent INT NOT NULL CHECK (preis_cent > 0),
+ vorhanden BOOLEAN DEFAULT TRUE NOT NULL
+);
+CREATE TABLE IF NOT EXISTS kauf (
+ kauf_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+ kind_id BIGINT NOT NULL REFERENCES kind(kind_id),
+ artikel_id BIGINT NOT NULL REFERENCES artikel(artikel_id),
+ gekauft_am TIMESTAMP(9) WITH TIME ZONE NOT NULL,
+ preis_cent INT NOT NULL CHECK (preis_cent BETWEEN 1 AND 150)
+);
+CREATE INDEX IF NOT EXISTS kauf_kind_zeit ON kauf(kind_id, gekauft_am);

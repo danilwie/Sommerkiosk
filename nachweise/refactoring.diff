@@ -1,0 +1,31 @@
+--- a/src/main/java/kiosk/Stammdaten.java
++++ b/src/main/java/kiosk/Stammdaten.java
+@@ -15,22 +15,16 @@
+         return Jdbc.eins(c,"SELECT artikel_id,name,preis_cent,vorhanden FROM artikel WHERE artikel_id=?",Stammdaten::artikelZeile,id);
+     }
+     long neuesKind(String name) throws SQLException {
+-        String n = Regeln.name(name);
+-        try (var c = db.oeffnen(); var p = c.prepareStatement("INSERT INTO kind(name) VALUES (?)", Statement.RETURN_GENERATED_KEYS)) {
+-            p.setString(1,n);
+-            Jdbc.genauEinmal(p.executeUpdate());
+-            try (var keys = p.getGeneratedKeys()) {
+-                if (!keys.next()) throw new SQLException("Generierte Kennung fehlt.");
+-                return keys.getLong(1);
+-            }
+-        }
++        return anlegen("INSERT INTO kind(name) VALUES (?)", Regeln.name(name));
+     }
+     long neuerArtikel(String name, int preis) throws SQLException {
+         String n = Regeln.name(name);
+         if (preis <= 0) throw new Ablehnung("Preis muss positiv sein.");
+-        try (var c = db.oeffnen(); var p = c.prepareStatement("INSERT INTO artikel(name,preis_cent) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS)) {
+-            p.setString(1,n);
+-            p.setInt(2,preis);
++        return anlegen("INSERT INTO artikel(name,preis_cent) VALUES (?,?)", n, preis);
++    }
++    private long anlegen(String sql, Object... werte) throws SQLException {
++        try (var c = db.oeffnen(); var p = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
++            Jdbc.binden(p,werte);
+             Jdbc.genauEinmal(p.executeUpdate());
+             try (var keys = p.getGeneratedKeys()) {
+                 if (!keys.next()) throw new SQLException("Generierte Kennung fehlt.");

@@ -1,0 +1,11 @@
+[INFO] Running kiosk.RegelnTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.100 s -- in kiosk.RegelnTest
+[INFO] Running kiosk.KioskDbTest
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.677 s -- in kiosk.KioskDbTest
+[INFO] Running kiosk.MessungTest
+MESSUNG Kinder=5 K?ufe=5 SELECTs=1
+MESSUNG Kinder=50 K?ufe=50 SELECTs=1
+MESSUNG Kinder=500 K?ufe=500 SELECTs=1
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.671 s -- in kiosk.MessungTest
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS

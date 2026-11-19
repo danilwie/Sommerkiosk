@@ -1,0 +1,32 @@
+DEMO: eigener flüchtiger Bestand, Uhr fest.
+Lager 2026-07-01 bis 2026-07-10 | heute 2026-07-03 | Europe/Berlin
+kind|Name                 artikel|Name|Euro
+suche|Namensteil          liste
+aendern|Artikel-ID|Euro|ja/nein     loeschen|Artikel-ID
+kauf|Kind-ID|Artikel-ID   auszug|Kind-ID
+abschluss                 hilfe                 ende
+'suche|' zeigt alle Kinder. Bei 'kauf' separat mit 'ja' bestätigen.
+1 | Alex | Rest 14,00 €
+2 | Alex | Rest 15,00 €
+1 | Saft | 1,00 € | verfügbar
+2 | Apfel | 0,50 € | verfügbar
+3 | Keks | 0,75 € | verfügbar
+4 | Wasser | 0,25 € | verfügbar
+5 | Eis | 1,25 € | nicht verfügbar
+Artikel-ID: 6
+Artikel geändert.
+Artikel gelöscht.
+Alex (#1): Apfel für 0,50 € buchen? ja / nein
+Gebucht. Heute 1,50 € | Rest 13,50 €
+Alex (#1): Wasser für 0,25 € buchen? ja / nein
+Abgelehnt: Tageslimit: heute noch 0,00 €
+2026-07-03T09:00+02:00[Europe/Berlin] | Saft | 1,00 €
+2026-07-03T12:00+02:00[Europe/Berlin] | Apfel | 0,50 €
+#1 Alex | Start 15,00 € | Ausgaben 1,50 € | Rückzahlungsbetrag 13,50 €
+Davon heute: 1,50 €
+#1 Alex | Start 15,00 € | Ausgaben 1,50 € | Rückzahlungsbetrag 13,50 €
+#2 Alex | Start 15,00 € | Ausgaben 0,00 € | Rückzahlungsbetrag 15,00 €
+#3 Jona | Start 15,00 € | Ausgaben 1,00 € | Rückzahlungsbetrag 14,00 €
+#4 Mira | Start 15,00 € | Ausgaben 1,25 € | Rückzahlungsbetrag 13,75 €
+#5 Sam | Start 15,00 € | Ausgaben 0,50 € | Rückzahlungsbetrag 14,50 €
+Rückzahlungsbeträge gesamt (keine Auszahlung): 70,75 €

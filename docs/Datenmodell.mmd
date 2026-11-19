@@ -1,0 +1,22 @@
+erDiagram
+    KIND ||--o{ KAUF : taetigt
+    ARTIKEL ||--o{ KAUF : betrifft
+    KIND {
+        BIGINT kind_id PK
+        VARCHAR100 name
+        INT budget_cent
+        INT restbudget_cent
+    }
+    ARTIKEL {
+        BIGINT artikel_id PK
+        VARCHAR100 name
+        INT preis_cent
+        BOOLEAN vorhanden
+    }
+    KAUF {
+        BIGINT kauf_id PK
+        BIGINT kind_id FK
+        BIGINT artikel_id FK
+        TIMESTAMP_TZ9 gekauft_am "Zeitpunkt mit Offset und Nanosekunden"
+        INT preis_cent "Kaufpreis beim Buchen"
+    }

@@ -1,0 +1,6 @@
+Frischer Build: 5 Fachtests + 18 DB-Suite + 1 H2-Messung. 24/24 bestanden.
+Demo zweimal als neuer Prozess: Ausgabe identisch, 13,50 € Einzelrest und 70,75 € Gesamtbetrag.
+Kaufabbruch, ungültige ID, ungültiger Preis und Löschschutz am echten CLI bestätigt.
+Nutzbetrieb: zwei eigenständige Java-Prozesse öffnen dieselbe Datei; Stammdaten bleiben erhalten.
+Unbenutzbarer Datenpfad: verständliche Meldung plus Ursache auf stderr, Exitcode 1.
+Ungültiges Startdatum: Exitcode 2. Keine Datenbank aus den Prüfungen im Abgabepaket.

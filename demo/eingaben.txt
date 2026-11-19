@@ -1,0 +1,12 @@
+suche|Alex
+liste
+artikel|Probiertee|0,60
+aendern|6|0,70|ja
+loeschen|6
+kauf|1|2
+ja
+kauf|1|4
+ja
+auszug|1
+abschluss
+ende

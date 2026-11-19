@@ -1,0 +1,5 @@
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.513 s <<< FAILURE! -- in kiosk.KioskDbTest
+org.opentest4j.AssertionFailedError: expected: <0> but was: <1>
+[ERROR]   KioskDbTest.rollbackNachInsert:77->zustandLou:34 expected: <0> but was: <1>
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0
+[INFO] BUILD FAILURE
