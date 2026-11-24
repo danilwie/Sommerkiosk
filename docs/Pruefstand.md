@@ -1,57 +1,41 @@
-# Prüfstand vom 19.11.2026
+# Prüfstand und Freigabegrenzen
 
-## Bezug und Grenzen
+Stand: 24.11.2026. Bezug des Repository-Abrufs vor dieser Korrektur: Branch daniel/dokumente-abschluss, Commit 2f7a86f8bbaf44bd1ff3a59b54582a494825fbc4. Kein endgültiger Abgabe- oder Freigabevermerk.
 
-Die hier beschriebene Lesekontrolle bezieht sich auf Branch daniel/dokumente-abschluss, Commit 178773bfac644d38f0aa07705002878c7b63009c vor dieser Dokumentkorrektur. Sie ist keine vollständige Abnahme, keine neue lokale Testausführung und kein menschliches Teamreview.
+## Tatsächlich ausgeführte Kontrollen
 
-## Tatsächlich geprüft
+- In der vorherigen Lesekontrolle alle acht Java-Hauptklassen, drei Testklassen und drei SQL-Dateien gelesen; Schema und Datenmodell abgeglichen. Der aktuell abgerufene src-Baum ist gegenüber dem zuvor geprüften Stand unverändert.
+- README und Dokumentliste erneut gelesen; die drei gewünschten Löschungen sind weiterhin vorhanden, das heißt die betreffenden Dateien fehlen im Branch.
+- Originalaufgabenblatt V4 direkt gelesen und die Dokumentationsanforderungen gegengeprüft.
+- Anforderungsmatrix und Quellen/KI erneut gelesen; Qualitaet.md war Bestandteil der vorherigen Lesekontrolle.
+- Alle acht Dateien aus nachweise gelesen: build-vorher.txt, build-nachher.txt, kaltstart-build.txt, demo.txt, mutationsprobe.txt, paketpruefung.txt, refactoring.diff, SHA256SUMS.txt.
+- .gitignore, Demo-Eingaben, Wrapper-Konfiguration sowie mvnw und mvnw.cmd gelesen. Die Skripte wurden nicht neu ausgeführt. Wrapper-Lizenzhinweise bleiben erhalten.
+- PR-Metadaten, aktuelle Check-Ergebnisse und Reviewliste abgerufen. README auf main zur Einordnung des Konfliktstatus gelesen; keine Konfliktlösung oder Änderung auf main vorgenommen.
 
-- Alle acht Java-Hauptklassen gelesen: Abrechnung, Datenbank, Jdbc, KaufService, Main, Menue, Regeln, Stammdaten.
-- Alle drei Testklassen gelesen: KioskDbTest (18 Testmethoden), RegelnTest (5), MessungTest (1). Die Methodenanzahl ist eine Quelltextzählung, kein neu ausgeführter Testbericht.
-- schema.sql, demo.sql und testdaten.sql gelesen. Das Schema hat drei Tabellen mit Primärschlüsseln und zwei Fremdschlüsseln. Beide Seeds enthalten je fünf Kinder, Artikel und Käufe.
-- Datenmodell.mmd mit den gelesenen Tabellen und Beziehungen abgeglichen.
-- README, POM, CI-Workflow, Anforderungsmatrix, Quellen-und-KI, Qualitaet und Praesentation gelesen; teilweise in den unmittelbar vorhergehenden Prüfschritten derselben Unterhaltung.
-- PR-Dateiliste geprüft: README und Arbeitsplan-DOCX geändert, Arbeitsplan-PDF nicht geändert.
-- GitHub-Check-Ergebnisse geprüft: beide verify-Checks erfolgreich; PR-Lauf nach Wiederholung.
+## Nachweise und ihre Aussage
 
-## Beobachtungen aus dem Code
+build-vorher, build-nachher und kaltstart-build melden jeweils 24 Tests ohne Fehler oder übersprungene Tests. mutationsprobe enthält den erwarteten Fehlschlag der isolierten Gegenprobe. Der Refactoring-Diff zeigt die Bündelung der generierten ID-Behandlung in Stammdaten.anlegen. Das Demoprotokoll enthält 13,50 Euro Einzelrest und 70,75 Euro Gesamtbetrag nach den dokumentierten Eingaben. Lesen dieser Dateien ist keine erneute Ausführung oder unabhängige Bestätigung ihrer gesamten Entstehungsgeschichte.
 
-- Kauf-INSERT und Budget-UPDATE nutzen dieselbe Connection mit deaktiviertem Auto-Commit. Commit erfolgt nach beiden geprüften Schreibschritten; SQL- und Laufzeitfehler führen zum Rollback-Versuch.
-- SQL-Nutzwerte werden über PreparedStatements gebunden. Ressourcen werden an den gelesenen Erzeugungsstellen mit try-with-resources geschlossen.
-- Tagesgrenzen werden aus Europe/Berlin berechnet; Kaufpreise werden historisch gespeichert.
-- Der Rollback-Test erzwingt eine benannte CHECK-Verletzung beim zweiten Schreibschritt und prüft anschließend Kaufzahl und Restbudget über separate Connections.
-- MessungTest prüft die SELECT-Anzahl für die Abschlussliste, nicht deren Laufzeit.
-- Kein aus dieser Lesekontrolle belegter Anlass, die Java- oder SQL-Dateien vor dem Dokumentabgleich auf Verdacht zu verändern. Dies ist keine Fehlerfreiheitsgarantie.
+Der abgerufene verify-Check zum Bezugscommit ist erfolgreich:
+https://github.com/danilwie/Sommerkiosk/actions/runs/44575185830
 
-## Verifizierter Remote-Status
+Neue Dokumentationscommits benötigen einen eigenen erfolgreichen Lauf. Kein lokaler Maven-/Java-Lauf wurde in dieser Abschlusskorrektur ausgeführt. Der vorhandene SHA256SUMS-Bericht ist historisch: Er enthält inzwischen entfernte Dateien und ältere Fassungen. Er wurde nicht als aktuelles Manifest bestätigt oder mit erfundenen Werten erneuert.
 
-Push-Lauf: https://github.com/danilwie/Sommerkiosk/actions/runs/44569977906
+## Änderungen dieser Abschlusskorrektur
 
-PR-Lauf: https://github.com/danilwie/Sommerkiosk/actions/runs/44570965319
+- README.md: tote Dokumentverweise entfernt, Einrichtung und Demo der drei Abläufe konkretisiert, SQL-Reihenfolge und aktueller belegter CI-Bezug dokumentiert.
+- docs/Anforderungsmatrix.md: Originalblatt-Abgleich, Zuordnung aller 15 Kriterien, Normal-/Fehlerfälle und zutreffender Remote-Status.
+- docs/Quellen-und-KI.md: historische und aktuelle Nachweise getrennt; Löschungen, KI-Anteile und belegte Remote-Arbeit eingeordnet.
+- docs/Pruefstand.md: Prüfungen, Grenzen und Freigabehindernisse aktualisiert.
+- Keine Java-/SQL-Änderung, keine neuen lokalen Tests, keine DOCX-/PDF-Änderung, keine Wiederherstellung der gelöschten Dateien und kein Merge.
 
-Der erste PR-Versuch scheiterte beim Maven-Download. Der erneut ausgeführte verify-Job war erfolgreich. Diese Ergebnisse beziehen sich auf den oben genannten Stand, nicht automatisch auf spätere Änderungen.
+## Vor endgültiger Freigabe offen
 
-## Einordnung älterer Statusangaben
-
-Anforderungsmatrix.md und Quellen-und-KI.md enthalten noch historische Aussagen über nicht belegte Repository-/CI-Arbeit. Inzwischen sind der gepushte Branch, PR #1 und die oben genannten erfolgreichen Checks nachgewiesen. Historische lokale Prüfungen sind dadurch weder neu ausgeführt noch einzelnen Teammitgliedern zugeordnet. Die alten Texte müssen noch im Zusammenhang überarbeitet werden.
-
-Qualitaet.md beschreibt einen früheren lokalen Prüfstand. Die dortige Formulierung ohne externen CI-Beleg gilt für diesen historischen Nachweis, nicht als aktueller Gesamtstatus des Repositorys. Die enthaltenen lokalen Protokolle und die Mutationsprobe wurden in dieser Kontrolle nicht vollständig neu geprüft oder reproduziert.
-
-## Noch offen
-
-1. Neuen Arbeitsplan-DOCX-Text mit der vorhandenen PDF vergleichen; über die GitHub-Schnittstelle wurde bisher nur die Binärdatei bestätigt. Gleichheit wird nicht behauptet. Bei Abweichungen PDF aus der aktuellen DOCX neu exportieren.
-2. Auch die anderen DOCX-/PDF-Paare inhaltlich lesen und abgleichen.
-3. Originalaufgabenblatt direkt prüfen. Die Matrix verweist auf Dreierteam oder abgesprochene Abweichung; die Genehmigung des Zweierteams ist hier nicht belegt.
-4. Praesentation.md korrigieren: Die beiden Aussagen Alle drei Personen und Alle drei passen nicht zum bestätigten Team Daniel Wiebe und Jonas Kölker. Verweise auf Demo-Befehle in README sind ebenfalls abzugleichen.
-5. Anforderungsmatrix.md und Quellen-und-KI.md im Zusammenhang auf den verifizierten Remote-Status aktualisieren, ohne historische Prüfnachweise zu überschreiben oder neue Teambeiträge zu erfinden.
-6. Alle Dateien in nachweise/ sowie Wrapper-Konfiguration, Wrapper-Skripte, .gitignore und Demo-Eingaben vollständig prüfen.
-7. Echte Beiträge und menschliche Prüfungen von Daniel und Jonas nur nach deren Bestätigung dokumentieren.
-8. Nach Dokumentkorrekturen neue CI-Ergebnisse prüfen.
-9. Jonas prüft PR #1 tatsächlich; danach über Zusammenführung entscheiden. Keine Freigabe wird vorweggenommen.
-10. Präsentation auf den persönlichen Rechnern proben und formale Einreichung sowie Termin klären.
-
-## Änderungen dieses Dokumentationsschritts
-
-- README.md: maskierte Markdown-Zeichen, Tabellenabstände und Windows-Wrapper-Aufruf korrigiert; bestätigte CI-Ergebnisse mit ihrem Bezugsstand dokumentiert.
-- docs/Pruefstand.md: Lesekontrolle, Grenzen, verifizierten Remote-Status und offene Aufgaben dokumentiert.
-- Keine Java-/SQL-Änderungen, keine neuen lokalen Tests, keine DOCX-/PDF-Änderungen und kein Merge in diesem Schritt.
+1. GitHub meldet PR #1 als offen und mergeable_state dirty. Konfliktursache im aktuellen Vergleich feststellen und bewusst lösen; kein Force-Push und kein blindes Überschreiben von main.
+2. Neue CI zum Dokumentationscommit prüfen; nach Konfliktlösung auch den tatsächlich zur Abgabe vorgesehenen Stand prüfen.
+3. In der abgerufenen Reviewliste steht kein Review. Tatsächliche Prüfung durch Jonas und Teamfreigabe nicht vorwegnehmen.
+4. Aktuelle Remote-DOCX-/PDF-Inhalte vollständig vergleichen. Ältere lesbare Anhänge sind nicht sicher dieselbe Fassung. Insbesondere wurde die Arbeitsplan-DOCX ersetzt, die PDF im damaligen PR nicht mitgeändert.
+5. Steckbrief/Projektdokumentation können ältere offene CI-Statusangaben enthalten; Abgleich mit ihren aktuellen Remote-Fassungen und gegebenenfalls Aktualisierung erforderlich.
+6. Echte Beiträge von Daniel/Jonas bestätigen, Zweierteam-Abstimmung und offiziellen Abgabeweg/Termin klären. Keine Bestätigung erfinden.
+7. Auf dem persönlichen Vorführrechner README-Build und Demo proben. Beide müssen alle Abläufe und die Transaktion erklären können.
+8. Nach Freigabe eindeutigen Abgabecommit festhalten und genau diesen Stand einreichen. Eine Veröffentlichung oder Zusammenführung erfolgt nur nach gesonderter Zustimmung.

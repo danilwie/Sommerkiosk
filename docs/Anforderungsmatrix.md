@@ -1,29 +1,43 @@
 # Anforderungs- und Nachweismatrix
 
-Maßstab: `04_AufgabeTestat-1.pdf`, V4, S. 4–5; Konkretisierungen S. 1–3. AF1 = Stammdaten, AF2 = Kauf, AF3 = Abrechnung. `H2` meint hier eine echte eingebettete Engine, nicht einen Mock. Testmethoden ohne Klassenpräfix stehen in `KioskDbTest`. „Lokal“ bezeichnet einen überprüften Stand, nicht eine Benotung oder einen externen Lauf.
+Stand der Dokumentationsprüfung: 24.11.2026. Grundlage: 04_AufgabeTestat-1.pdf, Aufgabenblatt V4, insbesondere Seiten 1–5. Die Vorgaben wurden am Original gegengelesen. AF1 = Stammdaten, AF2 = Kauf, AF3 = Abrechnung. Die Matrix ordnet Implementierung und Nachweise zu; sie ersetzt weder eine Bewertung noch die Freigabe des Teams.
 
-| Nr. und verbindliche Anforderung | AF und Implementierungsort | Konkreter Test / Prüfnachweis | Doku | Status / Lücke |
-|---|---|---|---|---|
-| 1: Mind. drei zusammenhängende Abläufe; je Normal- und Fehler-/Grenzfall | AF1 `Stammdaten`, AF2 `KaufService`, AF3 `Abrechnung`; gemeinsam im `Menue` | `artikelCrud` / `wirksameFremdschluessel`; `commit` / `exaktLimitUndEinCentZuviel`; `abrechnungMitUndOhneKaeufe` / `manipulationInAbrechnungErkannt`; Konsolendemo | Steckbrief, Testplan, README | lokal geprüft |
-| 2: ≥3 sinnvolle Tabellen mit PK, ≥2 wirksame FK; Schema = Modell | AF1–3 `schema.sql`: kind, artikel, kauf; Kauf referenziert beide Stammtabellen | `wirksameFremdschluessel`, `wiederaufbau`; Abgleich Feld für Feld mit Modell | `Datenmodell.mmd`, Projektdokumentation | lokal geprüft |
-| 3: CRUD gesamt + parametrisierte Suche, Bindung der Nutzereingaben | AF1 `Stammdaten`: anlegen, lesen, ändern, unreferenzierte Artikel löschen; `LOCATE(LOWER(?),LOWER(name))` | `stammdatenUndSuche`, `artikelCrud`, `wirksameFremdschluessel` | README, Testplan | lokal geprüft |
-| 4: ≥2 zusammengehörige Schreibschritte, alles oder nichts | AF2 `KaufService.buchen`: Kauf-INSERT, Budget-UPDATE, Zeilenzahlen, Commit/Rollback | `commit`, `rollbackNachInsert`; Negativkontrolle mit absichtlich gebrochenem Commit | `Qualitaet.md`, Testplan | lokal geprüft |
-| 5: Ungültige Eingaben, fehlende Datensätze, Verbindungsausfall; fachlich/technisch unterscheiden | AF1–3 `Regeln`, `Ablehnung`, `Jdbc.eins`, `Menue`, `Main.technik` | `falschePreise`, `unbekanntUndGesperrt`, `verbindungFehlt`; CLI-Diagnose | README, Projektdokumentation | lokal geprüft |
-| 6: Ressourcen auch bei Fehlern schließen | AF1–3 `try` mit Ressourcen in `Jdbc`, `Stammdaten`, `Datenbank`, Services und `Main` | Codeprüfung aller Erzeugungsstellen; `rollbackNachInsert`, `dateiNeustart` prüfen Wiederzugriff. Kein separater Langzeit-Leaktest behauptet. | Projektdokumentation, `Qualitaet.md` | lokal geprüft |
-| 7: Bedienung, Fachlogik, Datenzugriff trennen, verständliche Verträge | AF1–3 `Menue` → Services, `Regeln`, JDBC-Helfer; `Main` verdrahtet | Codeprüfung, `RegelnTest`, integrierte Demo | Projektdokumentation, `Praesentation.md` | Struktur lokal geprüft; persönliches Verständnis durch Team zeigen |
-| 8: Skriptaufbau, ≥5 sinnvolle Datensätze je Tabelle | AF1–3 Schema → definierter Seed | `wiederaufbau` prüft zweimal je 5/5/5 und 325 Cent historische Gesamtausgaben; alle Salden konsistent | README, Datenmodell | lokal geprüft |
-| 9: ≥12 verschiedene automatisierte Fälle, aussagekräftige Assertions | AF1–3 drei Testklassen | 24 Testmethoden, einschließlich einer Messmethode mit Ergebnis- und Zählassertions; auch ohne Messung 23 | Testplan, `nachweise/build-nachher.txt` | lokal geprüft; nichts übersprungen |
-| 10: ≥6 echte DB-Tests, Commit und absichtlicher Rollback mit Zustandsprüfung | AF2 und angrenzende Abläufe; echte H2-Tabellen | 18 `KioskDbTest`-Methoden (eine davon prüft gezielt einen Verbindungsfehler); zusätzlich `MessungTest`. Kontrollabfragen über separate Connections. | Testplan, `Qualitaet.md` | lokal geprüft |
-| 11: Wiederholbar, unabhängig, gleiche versionierte DB für App/Test/CI | AF1–3 `Datenbank`, `pom.xml`, `@BeforeEach`, `@TempDir` | `wiederaufbau`, `dateiNeustart`, Prüfung aus entpacktem ZIP; CI referenziert dieselbe POM | README | lokal geprüft; CI-Ausführung unter Nr. 12 |
-| 12: Abschlussstand in GitHub Actions bauen und mit frischer DB testen; Fehler müssen Lauf brechen | Alle; `.github/workflows/build.yml`, Wrapper, SQL-Aufbau in JUnit | Lokaler `clean verify`; zusätzliche CI-Prüfung auf alle drei Berichte; Mutation erzeugt nachweislich einen fehlgeschlagenen Maven-Lauf | README, `Qualitaet.md` | Workflow implementiert; externer grüner Lauf und Commit-Zuordnung **offen** |
-| 13: Reproduzierbare Messfrage, Daten, Vorgehen, Ergebnis und Interpretation | AF3 `Abrechnung.alle` | `MessungTest.selectAnzahlAbschluss`; beobachtete SELECTs bei 5/50/500 Kindern | `Qualitaet.md`, Maven-Auszüge | lokal gemessen |
-| 14: Konkretes begründetes Java-Refactoring, Vorher/Nachher, Verhaltenssicherung | AF1 `Stammdaten.anlegen` | Unveränderte Tests vor/nach Änderung; `refactoring.diff`, beide Buildprotokolle | `Qualitaet.md` | lokal geprüft; kein erfundener Commit |
-| 15: Eindeutiger Projektstand mit Code, Tests, Build, Schema, Modell, Anleitung, Zuordnung, Steckbrief, Quellen/KI | Alle; Paketwurzel und `docs/` | Paket frisch entpackt, gebaut, gestartet und Demo ausgeführt; Inhaltsverzeichnis in README | README, vier aktualisierte Dokumente, `Quellen-und-KI.md` | Paket lokal geprüft; formale Teamabgabe bleibt ausstehend |
+Die Java-/SQL-Quelltexte wurden zuvor gelesen. Der src-Baum ist im aktuell abgerufenen Branch unverändert. Vorhandene lokale Protokolle wurden gelesen, aber nicht neu ausgeführt. Aktuell abgerufener erfolgreicher CI-Check: Stand 2f7a86f8bbaf44bd1ff3a59b54582a494825fbc4, https://github.com/danilwie/Sommerkiosk/actions/runs/44575185830 . Für nachfolgende Änderungen ist ein neuer erfolgreicher Lauf erforderlich.
 
-## Einordnung außerhalb der 15 Rubrikzeilen
+| Nr. / Anforderung | Implementierung und konkreter Nachweis | Einordnung / Grenze |
+|---|---|---|
+| 1: Mindestens drei zusammenhängende Abläufe; je Normal- und Fehler-/Grenzfall | AF1 Stammdaten, AF2 KaufService, AF3 Abrechnung; verbunden im Menue. Fälle siehe unten; Demo in README. | Code gelesen; persönlicher Probelauf des Teams nicht bestätigt. |
+| 2: Mindestens drei Tabellen mit PK und zwei wirksamen FK; Modell stimmt | schema.sql: kind, artikel, kauf; Kauf referenziert Kind und Artikel. Datenmodell.mmd; wirksameFremdschluessel und wiederaufbau. | Schema/Modell gelesen und abgeglichen. |
+| 3: CRUD insgesamt, parametrisierte Suche | Stammdaten: anlegen, lesen, Artikel ändern/löschen; LOCATE(LOWER(?),LOWER(name)). stammdatenUndSuche, artikelCrud, wirksameFremdschluessel. | Bindung über PreparedStatements; Löschen nur unreferenzierter Artikel. |
+| 4: Mindestens zwei zusammengehörige Schreibschritte; alles oder nichts | KaufService.buchen: Kauf-INSERT und Budget-UPDATE auf derselben Connection; Commit/Rollback. commit und rollbackNachInsert. | Rollback-Test prüft Datenzustand über separate Connections. |
+| 5: Ungültige Eingaben, unbekannte Datensätze, Verbindungsfehler | Regeln, Ablehnung, Jdbc.eins, Menue, Main.technik; falschePreise, unbekanntUndGesperrt, verbindungFehlt. | Fachliche Ablehnung und SQLException getrennt. |
+| 6: Ressourcen zuverlässig schließen | try-with-resources in JDBC-Helfern, Datenbank, Services und Main; rollbackNachInsert, dateiNeustart. | Lesekontrolle; kein eigenständiger Langzeit-Leaktest behauptet. |
+| 7: Bedienung, Fachlogik, Datenzugriff trennen; Verträge | Menue, Regeln, Services und Jdbc; Main verdrahtet. Projektdokumentation und README. | Jedes Teammitglied muss die gesamte Anwendung erklären können; nicht durch CI bewiesen. |
+| 8: Reproduzierbare Skripte; mindestens fünf Datensätze je Tabelle | Schema zuerst, danach genau ein Seed. demo.sql und testdaten.sql je 5/5/5; wiederaufbau prüft fünf Käufe und 325 Cent Testausgaben. | Reihenfolge und Trennung stehen in README. |
+| 9: Mindestens zwölf unterschiedliche automatisierte Fälle | RegelnTest: 5, KioskDbTest: 18, MessungTest: 1. Aussagekräftige Assertions einschließlich Grenzfällen und Zustandskontrollen. | 24 Methoden im Quelltext; build-nachher.txt meldet 24 Erfolge. Historischer Bericht, kein neuer lokaler Lauf. |
+| 10: Mindestens sechs echte DB-Tests mit Commit und Rollback | KioskDbTest nutzt H2; commit, rollbackNachInsert, artikelCrud, historischePreise, dateiNeustart und weitere. | 18 Methoden in DB-Suite; eine davon prüft gezielt einen Verbindungsfehler. |
+| 11: Unabhängig wiederholbar; dasselbe DB-System | UUID-In-Memory-DB je Test, Schema/Seed in BeforeEach, TempDir für Dateitest. H2-Version zentral in POM. | Test- und Nutzdaten getrennt; kein persönlicher Datenbestand erforderlich. |
+| 12: Automatisierter Build/Test der Abschlussversion | .github/workflows/build.yml: clean verify; zusätzliche Prüfung auf drei Surefire-Berichte. Schema/Seed durch Tests. | Grüner Remote-Lauf für oben genannten Stand bestätigt. Finaler Abgabecommit noch festzulegen und erneut zu prüfen. |
+| 13: Reproduzierbare Messung | MessungTest.selectAnzahlAbschluss: 5/50/500 Kinder, jeweils eine SELECT-Ausführung. Qualitaet.md, build-nachher.txt. | Aussage über Statement-Anzahl, nicht konstante Laufzeit. |
+| 14: Begründetes Refactoring mit Vorher/Nachher und Tests | Stammdaten.anlegen bündelt ID-Behandlung; nachweise/refactoring.diff und build-vorher.txt/build-nachher.txt. | Dateien gelesen; keine erfundenen historischen Teamcommits, keine neue Reproduktion. |
+| 15: Reproduzierbarer, eindeutig bezeichneter Abgabestand | README, POM/Wrapper, src, Schema/Seeds, Datenmodell, Steckbrief, Matrix, Quellen/KI und Qualitätsnachweise vorhanden. | Dokumentpaar-Abgleich, Konfliktlösung, Teamfreigabe und formale Abgabe noch offen. |
 
-- **Verbindlich laut Blatt:** Dreierteam oder abgesprochene Abweichung, Java 25, IntelliJ/Eclipse, lokale Einzelplatzanwendung, hier dateibasiertes H2 mit JDBC; zufällig bestimmtes Mitglied erklärt das Ganze. CLI-Build unabhängig von IDE getestet, nicht das Starten auf den persönlichen Hochschulrechnern. Die empfohlenen sieben Zwischenziele sind keine sieben zusätzlichen benoteten Abgaben.
-- **Bestätigte Projektregeln:** eindeutige Kind-ID trotz Namensgleichheit, 1.500/150 Cent, kein Übertrag, zehn Tage, historischer Kaufpreis und verfügbare Artikel. Die Auskunft ist keine Auszahlung.
-- **Sinnvolle Verbesserungen:** Offset-Zeitstempel statt mehrdeutiger lokaler Zeit, unabhängige Rollback-Kontrolle und Mutationsprobe, fester Demo-Modus, Maven Wrapper. Keine zusätzlichen Benotungsminima daraus ableiten.
-- **Optionale Erweiterungen, nicht implementiert:** Storno mit Gegenbuchung, tatsächliche Auszahlung, Bestandsmengen, GUI, Mehrplatzbetrieb und Datenmigration. Keine davon ist Voraussetzung für die Demo.
-- **Unbestätigt bzw. extern:** realer Lagerbeginn, offizieller Abgabetermin, Teambeiträge, Repository- und CI-URLs; Einsatz in Berlin-Lagerzeit ist eine dokumentierte Entwurfsentscheidung. Separater VCS-Leistungsnachweis und individueller Feature-Vortrag siehe `Quellen-und-KI.md`.
+## Normal- und Fehlerfälle
+
+| Ablauf | Ausgangslage | Aktion | Erwartetes Ergebnis / Test |
+|---|---|---|---|
+| AF1 normal | Frische Testdaten, Artikel Tee noch nicht vorhanden | Anlegen, Preis/Verfügbarkeit ändern, lesen und löschen | Geänderte Werte werden gelesen; nach Löschen wieder fünf Artikel. artikelCrud. |
+| AF1 Fehler | Artikel 1 wird durch Käufe referenziert | Artikel 1 löschen | Fachliche Ablehnung, Artikel und fünf Käufe bleiben erhalten. wirksameFremdschluessel. |
+| AF2 normal | Kind 5 ohne Käufe, 1.500 Cent; gültiger Lagertag | Artikel 1 zu 100 Cent kaufen | Ein neuer Kauf, 1.400 Cent Rest, heute 100 Cent. commit. |
+| AF2 Grenze | Kind 5 hat heute 150 Cent ausgegeben | Weiteren Artikel zu einem Cent kaufen | Ablehnung, weiterhin zwei Käufe und 1.350 Cent Rest. exaktLimitUndEinCentZuviel. |
+| AF2 technischer Fehler | Kind 5 ohne Käufe; zusätzliche Test-CHECK-Regel verbietet Budgetabzug | Kauf-INSERT gelingt, Budget-UPDATE scheitert | SQLState 23513 und benannter Constraint; danach null Käufe und 1.500 Cent Rest. rollbackNachInsert. |
+| AF3 normal | Kind 5 ohne Käufe; danach Käufe an Tag 1 und Tag 3 | Auszug und Abschlussliste lesen | Zunächst 0 Ausgaben/1.500 Rest; danach 250 insgesamt, 150 heute, 1.250 Rest. abrechnungMitUndOhneKaeufe. |
+| AF3 Fehler | Restbudget von Kind 5 passt nicht zur Kaufhistorie | Auszug und Abschlussliste abrufen | SQLException statt Freigabe widersprüchlicher Salden. manipulationInAbrechnungErkannt. |
+
+## Formale Grenzen
+
+Das Blatt nennt ein Dreierteam; abweichende Teamgröße und passender Umfang sind mit der Lehrperson abzustimmen. Bestätigt sind Daniel Wiebe und Jonas Kölker als Projektteam, nicht die Genehmigung der Abweichung. Keine künstlichen Beiträge oder Commits ergänzen.
+
+Ein separates Dokument namens Testplan oder eine Präsentationsdatei ist nicht ausdrücklich gefordert. Die geforderten Fallbeschreibungen bleiben hier, Demo-Schritte in README und Tests in src/test erhalten.
+
+Offen: offizieller Abgabetermin, realer Lagerbeginn, konkrete menschliche Beiträge/Freigabe und Übereinstimmung aktueller DOCX/PDF. Storno, Auszahlung, GUI, Bestandsmengen, Mehrplatzbetrieb und Migration sind nicht implementierte Erweiterungen.
