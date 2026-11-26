@@ -1,135 +1,132 @@
 # Sommerkiosk
 
-Java-Konsolenanwendung zur Verwaltung eines Kiosks in einem zehntägigen Sommerlager.
+Java-Konsolenanwendung für den Kiosk eines zehntägigen Sommerlagers.
 
-**Team:** Daniel Wiebe und Jonas Kölker  
-**Modul:** Fortgeschrittene Programmierung  
-**Version:** 1.0.0  
-**Präsentation:** 25.11.2026  
-**Repository:** https://github.com/danilwie/Sommerkiosk
+Team: Daniel Wiebe und Jonas Kölker  
+Modul: Fortgeschrittene Programmierung  
+Version: 1.0.0  
+Präsentation und Abgabe: 02.12.2026  
+Repository: https://github.com/danilwie/Sommerkiosk
 
-## Funktionsumfang
+## Funktionen und Grenzen
 
-Die Anwendung unterstützt drei zusammenhängende Anwendungsfälle:
+1. Stammdaten verwalten: Kinder und Artikel anlegen, Kinder suchen, Artikelpreise und Verfügbarkeit ändern und unreferenzierte Artikel löschen.
+2. Käufe verbuchen: Kind und Artikel auswählen, bestätigen und Kauf samt Guthabenabzug gemeinsam speichern.
+3. Abrechnung anzeigen: historische Käufe, Tagesausgaben und geprüfte Rückzahlungsbeträge ausgeben.
 
-- Stammdaten verwalten: Kinder und Artikel anlegen, Kinder suchen sowie Artikelpreise und Verfügbarkeit ändern. Unreferenzierte Artikel können gelöscht werden.
-- Käufe verbuchen: Kind und Artikel auswählen, Fachregeln prüfen und Kauf sowie Guthabenabzug gemeinsam speichern.
-- Abrechnung anzeigen: Kaufhistorie, Tagesausgaben und Rückzahlungsbeträge ausgeben.
-
-Eine tatsächliche Auszahlung wird nicht erfasst. Lagerbestandszählung, Stornos und parallele Kassenbedienung sind nicht Bestandteil des Projekts.
+Keine Auszahlungsbuchung, Stornos, Bestandszählung oder parallele Kassenbedienung. Kinder werden durch IDs unterschieden; gleiche Namen sind zulässig.
 
 ## Fachregeln
 
-- Startguthaben je Kind: 15,00 €.
-- Tageslimit: 1,50 € pro Kalendertag in `Europe/Berlin`.
-- Nicht genutztes Tagesbudget wird nicht übertragen.
-- Der Lagerzeitraum umfasst zehn Tage.
-- Ein Kauf entspricht genau einem Artikel.
-- Kinder werden durch eindeutige IDs identifiziert; gleiche Namen sind zulässig.
-- Historische Kaufpreise bleiben bei späteren Preisänderungen erhalten.
-- Geldbeträge werden als ganze Cent verarbeitet.
-- Kauf und Guthabenabzug werden in einer gemeinsamen Transaktion gespeichert. Bei einem Fehler erfolgt ein Rollback.
+- Startbudget: 1.500 Cent je Kind.
+- Tageslimit: 150 Cent je Kalendertag in Europe/Berlin, ohne Übertrag.
+- Das Lager umfasst den Starttag und neun Folgetage.
+- Ein Kauf entspricht genau einem Artikel. Nur verfügbare Artikel sind kaufbar.
+- Geld wird in ganzen Cent verarbeitet. Der historische Kaufpreis bleibt bei Preisänderungen unverändert.
+- Kauf und Budgetabzug bilden eine Transaktion; ein Fehler führt zum Rollback-Versuch und einer Diagnose.
 
-## Technischer Aufbau
+## Voraussetzungen und Build
 
-| Komponente | Verwendung |
-|---|---|
-| Java 25 | Anwendung |
-| Maven 3.9.9 mit Wrapper | Build und Abhängigkeiten |
-| H2 2.3.232 | Relationale Datenbank |
-| JDBC | Datenzugriff und Transaktionen |
-| JUnit Jupiter 5.11.4 | Automatisierte Tests |
-| GitHub Actions | Automatisierter Build und Tests |
+JDK 25 mit java und javac im PATH beziehungsweise korrekt gesetztem JAVA_HOME. IDE: IntelliJ oder Eclipse mit JDK 25; alternativ Terminal. Im Projektordner müssen pom.xml, .mvn, mvnw und mvnw.cmd vorhanden sein. Versteckte Dateien beim Kopieren mitnehmen.
 
-Bedienung, Fachlogik und Datenzugriff sind in getrennten Klassen organisiert. Das Datenmodell besteht aus `kind`, `artikel` und `kauf`.
+Der Wrapper verwendet Maven 3.9.9; die POM legt H2 2.3.232 und JUnit Jupiter 5.11.4 fest. Kein separater Datenbankserver erforderlich. Der erste Build benötigt Internetzugriff auf Maven Central und Schreibrechte im Projekt sowie Maven-Benutzerverzeichnis.
 
-## Build und Tests
-
-Voraussetzung ist ein installiertes JDK 25. Der erste Build benötigt Internetzugriff zum Laden der Abhängigkeiten.
-
-### Windows
+Windows PowerShell:
 
 ```powershell
 .\mvnw.cmd -B -ntp clean verify
 ```
 
-### Linux und macOS
+Linux/macOS:
 
 ```bash
 sh ./mvnw -B -ntp clean verify
 ```
 
-Das ausführbare JAR wird unter `target/sommerkiosk-1.0.0.jar` erstellt. Testberichte liegen unter `target/surefire-reports/`.
+Erwartet: BUILD SUCCESS mit 24 Tests (RegelnTest 5, KioskDbTest 18, MessungTest 1), ohne Fehler oder übersprungene Tests.
 
-## Anwendung starten
+Windows: Meldet der Wrapper, JAVA_HOME sei nicht korrekt gesetzt, für die Sitzung auf das JDK 25 zeigen lassen, zum Beispiel:
 
-### Demo
+```powershell
+$env:JAVA_HOME = "C:\Pfad\zum\jdk-25"
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"
+java -version
+```
+
+JAR: target/sommerkiosk-1.0.0.jar. Testberichte: target/surefire-reports/.
+
+## Drei Abläufe demonstrieren
+
+Frische Demo starten:
 
 ```text
 java -jar target/sommerkiosk-1.0.0.jar --demo
 ```
 
-Der Demo-Modus verwendet vorbereitete Daten in einer getrennten In-Memory-Datenbank und das feste Datum 03.07.2026. Ein neuer Demo-Prozess stellt den ursprünglichen Bestand wieder her.
+Die Demo verwendet eine getrennte In-Memory-Datenbank und das feste Berliner Datum 03.07.2026. Sie berührt keine Nutzdatei. Die folgenden Befehle in derselben frischen Sitzung eingeben; jede Zeile einzeln:
 
-Vorbereitete Konsoleneingaben befinden sich in `demo/eingaben.txt`.
+```text
+suche|Alex
+liste
+artikel|Probiertee|0,60
+aendern|6|0,70|ja
+loeschen|6
+kauf|1|2
+ja
+kauf|1|4
+ja
+auszug|1
+abschluss
+ende
+```
 
-### Dateibasierter Betrieb
+- Stammdaten: zwei Alex mit unterschiedlichen IDs; der neue Artikel erhält in der frischen Demo ID 6 und wird nach Änderung wieder gelöscht. Ein benutzter Artikel, etwa ID 2, darf nicht gelöscht werden.
+- Kauf: Alex Nr. 1 hat heute bereits 100 Cent ausgegeben. Der Apfel zu 50 Cent wird gebucht: heute 150 Cent, Rest 1.350 Cent. Der folgende Wasserkauf zu 25 Cent wird abgelehnt; der Zustand bleibt unverändert.
+- Abrechnung: Der Auszug zeigt Saft und Apfel zu den historischen Preisen. Der Gesamtrückzahlungsbetrag beträgt nach diesem Ablauf 70,75 Euro; dies ist keine Auszahlung.
 
-Beispiel mit einem ausdrücklich beispielhaften Lagerbeginn:
+Ein neuer Demo-Prozess stellt den ursprünglichen Bestand wieder her. Die gleichen Eingaben liegen in demo/eingaben.txt.
+
+Automatisch in PowerShell (die erste Zeile sorgt für korrekte Umlaute und €):
+
+```powershell
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+Get-Content demo/eingaben.txt | java -jar target/sommerkiosk-1.0.0.jar --demo
+```
+
+Linux/macOS:
+
+```bash
+java -jar target/sommerkiosk-1.0.0.jar --demo < demo/eingaben.txt
+```
+
+## Dateibetrieb und Datenaufbau
 
 ```text
 java -jar target/sommerkiosk-1.0.0.jar --lager 2026-07-01
 ```
 
-Für den tatsächlichen Einsatz ist das Datum durch den realen Lagerbeginn zu ersetzen.
+Das Datum ist nur ein Beispiel. Für den Einsatz den tatsächlichen Lagerbeginn angeben. Daten liegen relativ zum Arbeitsverzeichnis in data/kiosk-<Lagerbeginn>.mv.db. Gleiches Verzeichnis und gleiches Datum öffnen denselben Bestand. Außerhalb des Lagerzeitraums bleiben Verwaltung und Auskunft möglich, Käufe nicht. Mit ende beenden. Vor einer Sicherung die Anwendung schließen; keine Datenbank- oder Sperrdatei auf Verdacht löschen.
 
-Die Daten werden relativ zum Arbeitsverzeichnis unter `data/kiosk-<Lagerbeginn>.mv.db` gespeichert. Vorhandene Bestände bleiben beim Neustart erhalten. Außerhalb des Lagerzeitraums sind Verwaltung und Auskunft möglich, Käufe jedoch nicht.
+| Modus | Aufbau | Ausgangszustand |
+|---|---|---|
+| Dateibetrieb | src/main/resources/db/schema.sql | Kein Seed; vorhandene Daten bleiben erhalten |
+| Demo | Schema, dann src/main/resources/db/demo.sql | Neuer Demo-Prozess |
+| Tests | Schema, dann src/test/resources/db/testdaten.sql | Je Test frische H2-Instanz; Dateitest im temporären Ordner |
 
-Die Anwendung wird mit `ende` beendet.
+Seeds nur einmal in eine neue leere Datenbank einspielen. Beide Seeds enthalten je fünf Kinder, Artikel und Käufe. Test- und Nutzdaten bleiben getrennt.
 
-## Qualitätssicherung
+## Qualitätsnachweise
 
-Der dokumentierte lokale Gesamtbuild vom 19.11.2026 umfasst 24 erfolgreiche Tests:
+GitHub Actions (.github/workflows/build.yml) baut und testet jeden Push und Pull Request mit einer frischen H2-Testdatenbank.
 
-| Testklasse | Anzahl |
-|---|---:|
-| `RegelnTest` | 5 |
-| `KioskDbTest` | 18 |
-| `MessungTest` | 1 |
+- Anforderungszuordnung und Normal-/Fehlerfälle: docs/Anforderungsmatrix.md
+- Schema: src/main/resources/db/schema.sql
+- Modell: docs/Datenmodell.mmd
+- Messung und Refactoring: docs/Qualitaet.md und nachweise/refactoring.diff
+- CI-Läufe, lokaler Lauf und Protokolle: docs/Pruefstand.md und nachweise/
+- Quellen und KI: docs/Quellen-und-KI.md
+- Projektsteckbrief, Projektdokumentation und Arbeitsplan: docs/01_Projektsteckbrief, docs/02_Projektdokumentation, docs/03_Arbeitsplan jeweils als DOCX/PDF
 
-Es traten keine Fehler oder übersprungenen Tests auf. Ein zusätzlicher gezielter Lauf des Rollback-Tests war ebenfalls erfolgreich.
+nachweise/SHA256SUMS.txt enthält die Prüfsummen aller Dateien des Abgabestands. Prüfen unter Linux/macOS: `sha256sum -c nachweise/SHA256SUMS.txt`.
 
-Für Importcommit `91699aa` wurde der GitHub-Actions-Job `verify` erfolgreich abgeschlossen:
-
-https://github.com/danilwie/Sommerkiosk/actions/runs/44561539453
-
-Dieser Nachweis bezieht sich auf den genannten Commit. Spätere Änderungen benötigen einen eigenen erfolgreichen Prüflauf.
-
-## Projektstruktur
-
-| Verzeichnis | Inhalt |
-|---|---|
-| `src/main/java/kiosk/` | Anwendungscode |
-| `src/main/resources/db/` | Schema und Demo-Daten |
-| `src/test/java/kiosk/` | Fachtests, Datenbanktests und Messung |
-| `src/test/resources/db/` | Testdaten |
-| `.github/workflows/` | CI-Konfiguration |
-| `demo/` | Vorbereitete Konsoleneingaben |
-| `docs/` | Projektdokumentation und Präsentationsunterlagen |
-| `nachweise/` | Prüfprotokolle und Refactoring-Nachweis |
-
-## Dokumentation
-
-- Projektsteckbrief: `docs/01_Projektsteckbrief`
-- Projektdokumentation: `docs/02_Projektdokumentation`
-- Arbeitsplan und Beiträge: `docs/03_Arbeitsplan`
-- Testplan: `docs/04_Testplan`
-- Anforderungsmatrix: `docs/Anforderungsmatrix.md`
-- Datenmodell: `docs/Datenmodell.mmd`
-- Messung und Refactoring: `docs/Qualitaet.md`
-- Präsentation: `docs/Praesentation.md`
-- Quellen und KI-Unterstützung: `docs/Quellen-und-KI.md`
-
-Die nummerierten Dokumente liegen als DOCX und PDF vor.
-
-Persönliche Daten, lokale Datenbankdateien und Zugangsdaten gehören nicht ins Repository.
+Persönliche Daten, lokale Datenbanken und Zugangsdaten nicht committen. Bei release version 25 not supported das von Maven verwendete JDK prüfen. Bei Downloadfehlern Ursache prüfen; TLS-Prüfungen nicht deaktivieren. Bei unklarem Kaufabschluss zuerst den Auszug prüfen, nicht blind erneut buchen.
