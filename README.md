@@ -5,7 +5,7 @@ Java-Konsolenanwendung für den Kiosk eines zehntägigen Sommerlagers.
 Team: Daniel Wiebe und Jonas Kölker  
 Modul: Fortgeschrittene Programmierung  
 Version: 1.0.0  
-Präsentation: 25.11.2026  
+Präsentation und Abgabe: 02.12.2026  
 Repository: https://github.com/danilwie/Sommerkiosk
 
 ## Funktionen und Grenzen
@@ -43,7 +43,15 @@ Linux/macOS:
 sh ./mvnw -B -ntp clean verify
 ```
 
-Erwartet: BUILD SUCCESS. Der Testquelltext enthält 24 Methoden: RegelnTest 5, KioskDbTest 18, MessungTest 1. Die vorhandenen historischen Buildprotokolle melden 24 erfolgreiche Tests ohne Fehler oder übersprungene Tests. Aktuelle Testzahlen im jeweiligen Lauf prüfen.
+Erwartet: BUILD SUCCESS mit 24 Tests (RegelnTest 5, KioskDbTest 18, MessungTest 1), ohne Fehler oder übersprungene Tests.
+
+Windows: Meldet der Wrapper, JAVA_HOME sei nicht korrekt gesetzt, für die Sitzung auf das JDK 25 zeigen lassen, zum Beispiel:
+
+```powershell
+$env:JAVA_HOME = "C:\Pfad\zum\jdk-25"
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"
+java -version
+```
 
 JAR: target/sommerkiosk-1.0.0.jar. Testberichte: target/surefire-reports/.
 
@@ -78,9 +86,10 @@ ende
 
 Ein neuer Demo-Prozess stellt den ursprünglichen Bestand wieder her. Die gleichen Eingaben liegen in demo/eingaben.txt.
 
-Automatisch in PowerShell:
+Automatisch in PowerShell (die erste Zeile sorgt für korrekte Umlaute und €):
 
 ```powershell
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 Get-Content demo/eingaben.txt | java -jar target/sommerkiosk-1.0.0.jar --demo
 ```
 
@@ -108,19 +117,16 @@ Seeds nur einmal in eine neue leere Datenbank einspielen. Beide Seeds enthalten 
 
 ## Qualitätsnachweise
 
-Für Branch-Stand 2f7a86f8bbaf44bd1ff3a59b54582a494825fbc4 wurde der verify-Check als erfolgreich abgerufen:
-https://github.com/danilwie/Sommerkiosk/actions/runs/44575185830
-
-Dieser Nachweis gilt nicht automatisch für spätere Commits. Nach Änderungen den neuen CI-Lauf prüfen. Vorhandene lokale Protokolle sind historische Nachweise, keine neu ausgeführten Tests.
+GitHub Actions (.github/workflows/build.yml) baut und testet jeden Push und Pull Request mit einer frischen H2-Testdatenbank.
 
 - Anforderungszuordnung und Normal-/Fehlerfälle: docs/Anforderungsmatrix.md
 - Schema: src/main/resources/db/schema.sql
 - Modell: docs/Datenmodell.mmd
 - Messung und Refactoring: docs/Qualitaet.md und nachweise/refactoring.diff
-- Prüfgrenzen und Freigabe: docs/Pruefstand.md
+- CI-Läufe, lokaler Lauf und Protokolle: docs/Pruefstand.md und nachweise/
 - Quellen und KI: docs/Quellen-und-KI.md
 - Projektsteckbrief, Projektdokumentation und Arbeitsplan: docs/01_Projektsteckbrief, docs/02_Projektdokumentation, docs/03_Arbeitsplan jeweils als DOCX/PDF
 
-Die separate Testplan-Datei und die interne Präsentationsanleitung wurden auf Wunsch des Teams entfernt; automatisierte Tests bleiben erhalten. Die Übereinstimmung der aktuellen DOCX-/PDF-Paare ist noch nicht bestätigt. nachweise/SHA256SUMS.txt gehört zu einem früheren Paketstand und ist kein aktuelles Gesamtmanifest.
+nachweise/SHA256SUMS.txt enthält die Prüfsummen aller Dateien des Abgabestands. Prüfen unter Linux/macOS: `sha256sum -c nachweise/SHA256SUMS.txt`.
 
 Persönliche Daten, lokale Datenbanken und Zugangsdaten nicht committen. Bei release version 25 not supported das von Maven verwendete JDK prüfen. Bei Downloadfehlern Ursache prüfen; TLS-Prüfungen nicht deaktivieren. Bei unklarem Kaufabschluss zuerst den Auszug prüfen, nicht blind erneut buchen.
